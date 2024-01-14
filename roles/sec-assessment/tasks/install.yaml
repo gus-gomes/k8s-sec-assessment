@@ -1,0 +1,38 @@
+---
+- name: trivy | Create temporary directory for trivy
+  ansible.builtin.file:
+    state: directory
+    path: "/tmp/trivy"
+
+- name: trivy | Unpack trivy package
+  ansible.builtin.unarchive:
+    src: "{{ local_bundle_dir }}/trivy_Linux.tar.gz"
+    dest: "/tmp/trivy"
+    remote_src: true
+
+- name: trivy | Install trivy
+  become: true
+  ansible.builtin.copy:
+    src: "/tmp/trivy/trivy"
+    dest: "/usr/bin/trivy"
+    mode: "+x"
+    remote_src: true
+
+- name: trivy | Cleaning Up temporary trivy installation files
+  become: true
+  ansible.builtin.file:
+    path: "/tmp/{{ trivy }}"
+    state: absent
+  loop_control:
+    loop_var: trivy
+  with_items:
+    - "trivy_Linux.tar.gz"
+    - "trivy"
+
+- name: cyclonedx | Install cyclonedx
+  become: true
+  ansible.builtin.copy:
+    src: "{{ local_bundle_dir }}/cyclonedx"
+    dest: "/usr/bin/cyclonedx"
+    mode: "+x"
+    remote_src: true

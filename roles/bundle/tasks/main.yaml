@@ -1,0 +1,11 @@
+- name: trivy | Download trivy binary
+  ansible.builtin.get_url:
+    url: "{{ trivy_url[arch] }}"
+    dest: "{{ local_bundle_dir }}/trivy_linux.tar.gz"
+    mode: "+x"
+
+- name: cyclonedx | Download cyclonedx binary
+  ansible.builtin.get_url:
+    url: "{{ cyclonedx_url[arch] }}"
+    dest: "{{ local_bundle_dir }}/cyclonedx_linux"
+    mode: "+x"

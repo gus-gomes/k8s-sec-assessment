@@ -1,0 +1,24 @@
+---
+- name: trivy | Create temporary directory for SBOMs generatarion
+  ansible.builtin.file:
+    state: directory
+    path: "{{ playbook_dir }}/sbom"
+
+- name: trivy | Fetch all docker images in a running cluster
+  ansible.builtin.shell:
+    cmd: |-
+        kubectl get pods --all-namespaces -o jsonpath="{.items[*].spec.containers[*].image}" |\
+        tr -s '[[:space:]]' '\n' |\
+        sort |\
+	      uniq 
+    register: docker_images
+- debug: msg="{{docker_images.stdout}}"
+
+- name: trivy | Generating SBOM for each docker image
+  ansible.builtin.shell:
+    cmd: trivy image -q --format cyclonedx --output {{ playbook_dir }}/sbom/{{ item }}.json {{ item }}
+  with_items: docker_images
+
+- name: cyclonedx | Merge all SBOMs
+  ansible.builtin.shell:
+    cmd: cyclonedx-cli merge --input-files {{ playbook_dir }}/sbom/* --input-format json --output-file {{ playbook_dir }}/stack_deployer_sbom.json

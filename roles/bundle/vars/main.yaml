@@ -1,0 +1,17 @@
+#################
+## Public Urls ##
+#################
+
+###########
+## Trivy ##
+###########
+trivy_url:
+  arm64: "https://github.com/aquasecurity/trivy/releases/download/v{{ trivy_version }}/trivy_{{ trivy_version }}_Linux-ARM64.tar.gz"
+  amd64: "hhttps://github.com/aquasecurity/trivy/releases/download/v{{ trivy_version }}/trivy_{{ trivy_version }}_Linux-AMD64.tar.gz"
+
+#############
+# Cyclonedx #
+#############
+cyclonedx_url:
+  arm64: https://github.com/CycloneDX/cyclonedx-cli/releases/download/{{ cyclonedx_version }}/cyclonedx-linux-arm64
+  amd64: https://github.com/CycloneDX/cyclonedx-cli/releases/download/{{ cyclonedx_version }}/cyclonedx-linux-amd64
