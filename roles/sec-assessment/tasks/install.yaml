@@ -6,7 +6,7 @@
 
 - name: trivy | Unpack trivy package
   ansible.builtin.unarchive:
-    src: "{{ local_bundle_dir }}/trivy_Linux.tar.gz"
+    src: "{{ local_bundle_dir }}/trivy_linux.tar.gz"
     dest: "/tmp/trivy"
     remote_src: true
 
@@ -32,7 +32,7 @@
 - name: cyclonedx | Install cyclonedx
   become: true
   ansible.builtin.copy:
-    src: "{{ local_bundle_dir }}/cyclonedx"
+    src: "{{ local_bundle_dir }}/cyclonedx_linux"
     dest: "/usr/bin/cyclonedx"
     mode: "+x"
     remote_src: true

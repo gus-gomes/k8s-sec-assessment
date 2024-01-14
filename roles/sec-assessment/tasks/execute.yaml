@@ -10,14 +10,16 @@
         kubectl get pods --all-namespaces -o jsonpath="{.items[*].spec.containers[*].image}" |\
         tr -s '[[:space:]]' '\n' |\
         sort |\
-	      uniq 
-    register: docker_images
+        uniq 
+  register: docker_images
 - debug: msg="{{docker_images.stdout}}"
 
 - name: trivy | Generating SBOM for each docker image
   ansible.builtin.shell:
-    cmd: trivy image -q --format cyclonedx --output {{ playbook_dir }}/sbom/{{ item }}.json {{ item }}
+    cmd: trivy image -q --format cyclonedx --output {{ playbook_dir }}/sbom/{{ image }}.json {{ image }}
   with_items: docker_images
+  loop_control:
+    loop_var: image
 
 - name: cyclonedx | Merge all SBOMs
   ansible.builtin.shell:
