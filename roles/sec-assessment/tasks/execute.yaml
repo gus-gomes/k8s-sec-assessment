@@ -24,4 +24,4 @@
 
 - name: cyclonedx | Merge all SBOMs
   ansible.builtin.shell:
-    cmd: cyclonedx merge --input-files {{ playbook_dir }}/sbom/* --input-format json --output-file {{ playbook_dir }}/stack_deployer_sbom.json
+    cmd: cyclonedx merge --input-files {{ playbook_dir }}/sbom/* --input-format json --output-file {{ playbook_dir }}/sbom/stack_deployer_sbom.json
