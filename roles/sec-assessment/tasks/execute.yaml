@@ -12,15 +12,16 @@
         sort |\
         uniq 
   register: docker_images
-- debug: msg="{{docker_images.stdout}}"
+- debug: msg="{{docker_images}}"
 
 - name: trivy | Generating SBOM for each docker image
   ansible.builtin.shell:
-    cmd: trivy image -q --format cyclonedx --output {{ playbook_dir }}/sbom/{{ image }}.json {{ image }}
-  with_items: docker_images
+    cmd: trivy image -q --format cyclonedx --output {{ playbook_dir }}/sbom/{{ counter }}.json {{ image }}
+  with_items: "{{ docker_images.stdout_lines }}"
   loop_control:
     loop_var: image
+    index_var: counter
 
 - name: cyclonedx | Merge all SBOMs
   ansible.builtin.shell:
-    cmd: cyclonedx-cli merge --input-files {{ playbook_dir }}/sbom/* --input-format json --output-file {{ playbook_dir }}/stack_deployer_sbom.json
+    cmd: cyclonedx merge --input-files {{ playbook_dir }}/sbom/* --input-format json --output-file {{ playbook_dir }}/stack_deployer_sbom.json
